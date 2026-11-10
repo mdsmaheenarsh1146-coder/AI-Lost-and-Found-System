@@ -1,0 +1,66 @@
+
+
+{% extends "items/base.html" %}
+{% load static %}
+
+{% block title %}Item Details{% endblock %}
+
+{% block content %}
+
+<div class="item-details-container">
+
+    <h1>Item Details</h1>
+
+    {% if item.image %}
+        <img
+            src="{{ item.image.url }}"
+            alt="{{ item.item_name }}"
+            class="item-details-image"
+        >
+    {% endif %}
+
+    <div class="item-details-info">
+
+        <h2>{{ item.item_name }}</h2>
+        {% if item.item_code %}
+            <p><strong>Item Code:</strong> {{ item.item_code }}</p>
+        {% endif %}
+        <p>
+            <strong>Type:</strong>
+            {{ item.get_item_type_display }}
+        </p>
+
+        <p>
+            <strong>Description:</strong>
+            {{ item.description }}
+        </p>
+
+        <p>
+            <strong>Location:</strong>
+            {{ item.location }}
+        </p>
+
+        <p>
+            <strong>Date:</strong>
+            {{ item.date }}
+        </p>
+
+        <p>
+            <strong>Status:</strong>
+            {{ item.get_status_display }}
+        </p>
+
+        <p>
+            <strong>Reported by:</strong>
+            {{ item.user.get_full_name|default:item.user.username }}
+        </p>
+
+    </div>
+
+    <a href="{% url 'browse_items' %}" class="back-button">
+        Back to Browse Items
+    </a>
+
+</div>
+
+{% endblock %}

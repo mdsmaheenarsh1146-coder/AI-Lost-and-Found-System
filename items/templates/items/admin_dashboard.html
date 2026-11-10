@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<h1>Lost and Found Admin Dashboard</h1>
+
+<hr>
+
+<h2>Overview</h2>
+
+<p>Total Users: {{ total_users }}</p>
+<p>Total Lost Items: {{ total_lost }}</p>
+<p>Total Found Items: {{ total_found }}</p>
+<p>Total Matches: {{ total_matches }}</p>
+
+<hr>
+
+<h2>All Registered Users</h2>
+
+<table border="1" cellpadding="10">
+    <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Date Joined</th>
+    </tr>
+
+    {% for user in users %}
+    <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.date_joined }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">No users found</td></tr>
+    {% endfor %}
+</table>
+
+<hr>
+
+<h2>All Lost Items</h2>
+
+{% for item in lost_items %}
+    <p>
+        Item: {{ item.item_name }}<br>
+        Reported By: {{ item.user.username }}<br>
+        Location: {{ item.location }}<br>
+        Date: {{ item.date }}<br>
+        Status: {{ item.status }}<br>
+        <img src="{{ item.image.url }}" width="120">
+    </p>
+    <hr>
+{% empty %}
+    <p>No lost items found.</p>
+{% endfor %}
+
+<h2>All Found Items</h2>
+
+{% for item in found_items %}
+    <p>
+        Item: {{ item.item_name }}<br>
+        Reported By: {{ item.user.username }}<br>
+        Location: {{ item.location }}<br>
+        Date: {{ item.date }}<br>
+        Status: {{ item.status }}<br>
+        <img src="{{ item.image.url }}" width="120">
+    </p>
+    <hr>
+{% empty %}
+    <p>No found items found.</p>
+{% endfor %}
+
+<h2>All Matches</h2>
+
+{% for match in all_matches %}
+    <p>
+        Lost Item: {{ match.lost_item.item_name }}<br>
+        Found Item: {{ match.found_item.item_name }}<br>
+        Lost Item Owner: {{ match.lost_item.user.username }}<br>
+        Found Item Owner: {{ match.found_item.user.username }}<br>
+        Similarity: {{ match.similarity_score|floatformat:2 }}<br>
+        Match Status: {{ match.status }}
+    </p>
+    <hr>
+{% empty %}
+    <p>No matches found.</p>
+{% endfor %}
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+
+{% extends "items/base.html" %}
+{% load static %}
+
+{% block title %}Register | Lost and Found{% endblock %}
+
+{% block content %}
+
+<div class="auth-page">
+
+    <div class="auth-card register-card">
+
+        <div class="auth-icon">👤</div>
+
+        <span class="auth-label">JOIN OUR COMMUNITY</span>
+
+        <h1>Create Your Account</h1>
+
+        <p class="auth-description">
+            Register to report lost items, discover found belongings, and reconnect people with their possessions.
+        </p>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit" class="auth-submit-btn">
+                Create Account →
+            </button>
+
+        </form>
+
+        <div class="auth-bottom">
+            Already have an account?
+            <a href="{% url 'login' %}">Login here</a>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

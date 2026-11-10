@@ -1,0 +1,47 @@
+
+{% extends "items/base.html" %}
+{% load static %}
+
+{% block title %}Report an Item | Lost and Found{% endblock %}
+
+{% block content %}
+
+<div class="report-page">
+
+    <div class="report-heading">
+        <span class="report-label">HELP RECONNECT LOST BELONGINGS</span>
+        <h1>Report an Item</h1>
+        <p>Tell us about the item you lost or found. Our AI system will help identify possible matches.</p>
+    </div>
+
+    <div class="report-form-card">
+
+        <div class="report-form-title">
+            <div class="report-form-icon">📦</div>
+            <div>
+                <h2>Item Details</h2>
+                <p>Fill in the information below.</p>
+            </div>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit" class="report-submit-btn">
+                Submit Report →
+            </button>
+
+        </form>
+
+        <p class="report-note">
+            🔒 Your information will be used to help identify and recover items.
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

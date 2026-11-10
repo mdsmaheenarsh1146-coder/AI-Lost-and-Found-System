@@ -1,0 +1,242 @@
+
+{% extends "items/base.html" %}
+{% load static %}
+
+{% block title %}Possible Matches | Lost and Found{% endblock %}
+
+{% block content %}
+
+<div class="matches-page">
+
+    <section class="matches-heading">
+        <span class="matches-label">AI-POWERED IMAGE RECOGNITION</span>
+        <h1>Possible Matches</h1>
+        <p>Our AI system has identified visually similar lost and found items.</p>
+    </section>
+
+    <section class="matches-container">
+
+        {% for match in matches %}
+
+            <div class="match-card">
+
+                <div class="match-card-header">
+                    <div>
+                        <span class="match-badge">🤝 Possible Match</span>
+                        <h2>{{ match.lost_item.item_name }} ↔
+                             {{ match.found_item.item_name }}</h2>
+                    </div>
+
+                    <div class="similarity-score">
+                        <strong>{{ match.similarity_score|floatformat:2 }}</strong>
+                        <span>Similarity Score</span>
+                    </div>
+                </div>
+
+                <div class="match-images">
+
+                    <div class="match-item">
+                        <h3>🔴 Lost Item</h3>
+
+                        {% if match.lost_item.image %}
+                            <img
+                                src="{{ match.lost_item.image.url }}"
+                                alt="{{ match.lost_item.item_name }}"
+                            >
+                        {% else %}
+                            <div class="match-no-image">📦</div>
+                        {% endif %}
+
+                        <h4>{{ match.lost_item.item_name }}</h4>
+                        <p>📍 {{ match.lost_item.location }}</p>
+                        <p>📅 {{ match.lost_item.date }}</p>
+                        {% if match.lost_item.item_code %}
+                            <p><strong>Shared Item Code:</strong>
+                                {{ match.lost_item.item_code }}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="match-divider">↔</div>
+
+                    <div class="match-item">
+                        <h3>🟢 Found Item</h3>
+
+                        {% if match.found_item.image %}
+                            <img
+                                src="{{ match.found_item.image.url }}"
+                                alt="{{ match.found_item.item_name }}"
+                            >
+                        {% else %}
+                            <div class="match-no-image">📦</div>
+                        {% endif %}
+
+                        <h4>{{ match.found_item.item_name }}</h4>
+                        <p>📍 {{ match.found_item.location }}</p>
+                        <p>📅 {{ match.found_item.date }}</p>
+                        <a href="{% url 'item_details' match.lost_item.id %}"
+                        class="check-item-btn">
+                            Check Lost Item
+                        </a>
+
+
+                        <a href="{% url 'item_details' match.found_item.id %}"
+                        class="check-item-btn">
+                            Check Found Item
+                        </a>
+
+                        
+                    </div>
+
+                </div>
+
+                <div class="match-status">
+                    <strong>Match Status:</strong>
+                    <span>{{ match.get_status_display }}</span>
+                </div>
+                {% if match.status == "CONFIRMED" and match.lost_item.user == request.user %}
+
+    <div class="match-contact">
+        <h4>📞 Found Item Reporter Contact</h4>
+
+        {% if match.found_item.phone_number %}
+            <p>{{ match.found_item.phone_number }}</p>
+        {% else %}
+            <p>No phone number was provided.</p>
+        {% endif %}
+    </div>
+
+    <div class="live-location-section">
+        <h4>📍 Found Item Live Location</h4>
+
+        <p id="location-status-{{ match.id }}">
+            Checking location...
+        </p>
+
+        <iframe
+            id="location-map-{{ match.id }}"
+            width="100%"
+            height="300"
+            style="border:0; border-radius:12px;"
+            loading="lazy"
+            hidden>
+        </iframe>
+
+        <a
+            id="location-link-{{ match.id }}"
+            href="#"
+            target="_blank"
+            hidden>
+            Open location in Google Maps
+        </a>
+    </div>
+
+    <script>
+    (function () {
+
+        const matchId = "{{ match.id }}";
+
+        const status = document.getElementById(
+            "location-status-" + matchId
+        );
+
+        const map = document.getElementById(
+            "location-map-" + matchId
+        );
+
+        const link = document.getElementById(
+            "location-link-" + matchId
+        );
+
+        const url = "{% url 'get_live_location' match.id %}";
+
+        async function refreshLocation() {
+
+            try {
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error("Unable to get location");
+                }
+
+                const data = await response.json();
+
+                if (data.latitude === null || data.longitude === null) {
+                    status.textContent =
+                        "The found reporter has not shared a location yet.";
+                    return;
+                }
+
+                const lat = data.latitude;
+                const lng = data.longitude;
+
+                map.src =
+                    "https://maps.google.com/maps?q=" +
+                    lat + "," + lng + "&z=15&output=embed";
+
+                map.hidden = false;
+
+                link.href =
+                    "https://www.google.com/maps?q=" + lat + "," + lng;
+
+                link.hidden = false;
+
+                status.textContent = data.sharing
+                    ? "Live location sharing is active."
+                    : "Location sharing has stopped. Showing last known location.";
+
+            } catch (error) {
+                status.textContent =
+                    "Unable to load the location.";
+            }
+        }
+
+        refreshLocation();
+
+        setInterval(refreshLocation, 5000);
+
+    })();
+    </script>
+
+{% endif %}
+
+                {% if match.status == "PENDING" and match.lost_item.user == request.user %}
+
+                    <div class="match-actions">
+
+                        <form method="POST" action="{% url 'confirm_match' match.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="confirm-match-btn">
+                                ✓ Confirm Match
+                            </button>
+                        </form>
+
+                        <form method="POST" action="{% url 'reject_match' match.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="reject-match-btn">
+                                ✕ Reject Match
+                            </button>
+                        </form>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        {% empty %}
+
+            <div class="matches-empty">
+                <div>🔍</div>
+                <h2>No Matches Found</h2>
+                <p>There are no possible matches available right now. Check again after more items are reported.</p>
+                <a href="{% url 'browse_items' %}">Browse Items</a>
+            </div>
+
+        {% endfor %}
+
+    </section>
+
+</div>
+
+{% endblock %}

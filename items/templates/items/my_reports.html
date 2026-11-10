@@ -1,0 +1,82 @@
+
+{% extends "items/base.html" %}
+{% load static %}
+
+{% block title %}My Reports | Lost and Found{% endblock %}
+
+{% block content %}
+
+<div class="my-reports-page">
+
+    <section class="my-reports-heading">
+        <span class="my-reports-label">YOUR ACTIVITY</span>
+        <h1>My Reports</h1>
+        <p>Keep track of the lost and found items you have reported.</p>
+    </section>
+
+    <section class="my-reports-container">
+
+        {% for item in items %}
+
+            <div class="my-report-card">
+
+                {% if item.image %}
+                    <img
+                        src="{{ item.image.url }}"
+                        alt="{{ item.item_name }}"
+                        class="my-report-image"
+                    >
+                {% else %}
+                    <div class="my-report-no-image">📦</div>
+                {% endif %}
+
+                <div class="my-report-content">
+
+                    <div class="my-report-tags">
+                        <span class="my-report-type">
+                            {{ item.get_item_type_display }}
+                        </span>
+
+                        <span class="my-report-status">
+                            {{ item.get_status_display }}
+                        </span>
+                    </div>
+
+                    <h2>{{ item.item_name }}</h2>
+
+                    {% if item.item_code %}
+                        <p><strong>Item Code:</strong> {{ item.item_code }}</p>
+                    {% endif %}
+
+                    <p>📍 <strong>Location:</strong> {{ item.location }}</p>
+
+                    <p>📅 <strong>Date:</strong> {{ item.date }}</p>
+
+                    <p class="my-report-description">
+                        {{ item.description }}
+                    </p>
+
+                    <a href="{% url 'item_details' item.id %}" class="check-item-btn">
+                        Check
+                    </a>
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <div class="my-reports-empty">
+                <div>📭</div>
+                <h2>No Reports Yet</h2>
+                <p>You haven't submitted any lost or found item reports.</p>
+                <a href="{% url 'report_item' %}">+ Report Your First Item</a>
+            </div>
+
+        {% endfor %}
+
+    </section>
+
+</div>
+
+{% endblock %}

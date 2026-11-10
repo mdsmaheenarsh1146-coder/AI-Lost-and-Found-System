@@ -1,0 +1,101 @@
+
+{% extends "items/base.html" %}
+{% load static %}
+
+{% block title %}Browse Items | Lost and Found{% endblock %}
+
+{% block content %}
+
+<div class="browse-page">
+
+    <section class="browse-heading">
+        <h1>Browse Items</h1>
+        <p>Search and explore lost and found items.</p>
+    </section>
+
+    <!-- Search Bar -->
+    <form method="GET"
+          action="{% url 'browse_items' %}"
+          class="item-search-form">
+
+        <input
+            type="text"
+            name="q"
+            placeholder="Search by item name, description or location..."
+            value="{{ search_query }}"
+        >
+
+        <button type="submit">Search</button>
+
+        {% if search_query %}
+            <a href="{% url 'browse_items' %}">Clear</a>
+        {% endif %}
+
+    </form>
+
+    <!-- Item Cards -->
+    <section class="browse-items-grid">
+
+        {% for item in items %}
+
+            <div class="browse-item-card">
+
+                {% if item.image %}
+                    <img
+                        src="{{ item.image.url }}"
+                        alt="{{ item.item_name }}"
+                    >
+                {% else %}
+                    <div class="browse-no-image">
+                        No Image
+                    </div>
+                {% endif %}
+
+                <div class="browse-item-info">
+
+                    <span class="browse-item-type">
+                        {{ item.get_item_type_display }}
+                    </span>
+
+                    <h3>{{ item.item_name }}</h3>
+                    {% if item.item_code %}
+                        <p><strong>Item Code:</strong> {{ item.item_code }}</p>
+                    {% endif %}
+
+                    <p>{{ item.description|truncatewords:15 }}</p>
+
+                    <p>📍 {{ item.location }}</p>
+
+                    <p>📅 {{ item.date }}</p>
+                    
+                    
+                    <a
+                        href="{% url 'item_details' item.id %}"
+                        class="check-item-btn">
+                        Check
+                    </a>
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <div class="browse-empty">
+                <h2>No Items Found</h2>
+
+                {% if search_query %}
+                    <p>No results for "{{ search_query }}". Try another search.</p>
+                    <a href="{% url 'browse_items' %}">View All Items</a>
+                {% else %}
+                    <p>There are currently no open items available.</p>
+                {% endif %}
+            </div>
+
+        {% endfor %}
+
+    </section>
+
+</div>
+
+{% endblock %}

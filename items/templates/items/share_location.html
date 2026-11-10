@@ -1,0 +1,174 @@
+
+{% extends "items/base.html" %}
+
+{% block title %}Live Location Sharing{% endblock %}
+
+{% block content %}
+
+<div class="location-sharing-container">
+
+    <h1>Live Location Sharing</h1>
+
+    <p>
+        Found item: <strong>{{ item.item_name }}</strong>
+    </p>
+
+    <p>
+        Your browser will request permission to access your location.
+        If you allow it, your live location will automatically be shared
+        with the owner of a confirmed match.
+    </p>
+
+    <p id="locationStatus">
+        Requesting your location permission...
+    </p>
+
+    <p id="coordinates"></p>
+
+    <a id="mapLink" href="#" target="_blank" hidden>
+        View location on Google Maps
+    </a>
+
+    <button type="button" id="stopSharing">
+        Stop Location Sharing
+    </button>
+
+</div>
+
+{% csrf_token %}
+
+<script>
+const statusText = document.getElementById("locationStatus");
+const coordinatesText = document.getElementById("coordinates");
+const mapLink = document.getElementById("mapLink");
+const stopButton = document.getElementById("stopSharing");
+
+const csrfToken = document.querySelector(
+    '[name=csrfmiddlewaretoken]'
+).value;
+
+const updateUrl = "{% url 'update_live_location' item.id %}";
+const stopUrl = "{% url 'stop_live_location' item.id %}";
+
+let watchId = null;
+let stopped = false;
+
+function startLocationSharing() {
+
+    if (!navigator.geolocation) {
+        statusText.textContent =
+            "Your browser does not support location services.";
+        return;
+    }
+
+    statusText.textContent = "Getting your location...";
+
+    watchId = navigator.geolocation.watchPosition(
+
+        async function(position) {
+
+            if (stopped) return;
+
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            coordinatesText.textContent =
+                "Latitude: " + latitude +
+                " | Longitude: " + longitude;
+
+            mapLink.href =
+                "https://www.google.com/maps?q=" +
+                latitude + "," + longitude;
+
+            mapLink.hidden = false;
+
+            try {
+
+                const response = await fetch(updateUrl, {
+                    method: "POST",
+                    credentials: "same-origin",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrfToken
+                    },
+                    body: JSON.stringify({
+                        latitude: latitude,
+                        longitude: longitude
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || "Location update failed.");
+                }
+
+                statusText.textContent =
+                    "Your live location is being shared.";
+
+            } catch(error) {
+
+                statusText.textContent = error.message;
+
+            }
+        },
+
+        function(error) {
+
+            statusText.textContent =
+                "Location permission denied or unavailable: " +
+                error.message;
+
+        },
+
+        {
+            enableHighAccuracy: true,
+            maximumAge: 5000,
+            timeout: 15000
+        }
+    );
+}
+
+async function stopLocationSharing() {
+
+    stopped = true;
+
+    if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+    }
+
+    try {
+
+        const response = await fetch(stopUrl, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "X-CSRFToken": csrfToken
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error("Could not stop location sharing.");
+        }
+
+        statusText.textContent =
+            "Location sharing has stopped.";
+
+        stopButton.disabled = true;
+
+    } catch(error) {
+
+        statusText.textContent = error.message;
+
+    }
+}
+
+stopButton.addEventListener("click", stopLocationSharing);
+
+// Automatically request location permission when the page opens.
+startLocationSharing();
+
+</script>
+
+{% endblock %}

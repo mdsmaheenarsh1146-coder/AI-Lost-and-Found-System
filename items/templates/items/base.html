@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Lost and Found{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="main-header">
+
+        <a href="{% url 'home' %}" class="brand">
+            <div class="brand-logo">⌕</div>
+            <div>
+                <h2>Lost & Found</h2>
+                <small>AI-Powered Recovery System</small>
+            </div>
+        </a>
+
+        <nav class="main-nav">
+
+            <a href="{% url 'home' %}">Home</a>
+
+            {% if user.is_authenticated %}
+
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'browse_items' %}">Browse Items</a>
+                <a href="{% url 'report_item' %}">Report Item</a>
+                <a href="{% url 'my_reports' %}">My Reports</a>
+                <a href="{% url 'matches' %}">Matches</a>
+
+                {% if user.is_staff %}
+                    <a href="{% url 'admin_dashboard' %}">Admin</a>
+                {% endif %}
+
+                <form method="POST" action="{% url 'logout' %}" class="header-logout">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
+                </form>
+
+            {% else %}
+
+                <a href="{% url 'browse_items' %}">Browse Items</a>
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}" class="register-link">Register</a>
+
+            {% endif %}
+
+        </nav>
+
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="page-content">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <h3>Lost & Found</h3>
+
+        <p>
+            Helping people recover their belongings
+            through AI-powered image matching.
+        </p>
+
+        <div class="footer-line"></div>
+
+        <small>© 2026 Lost & Found. All rights reserved.</small>
+    </footer>
+
+</body>
+</html>

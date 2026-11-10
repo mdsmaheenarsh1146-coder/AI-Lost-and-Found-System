@@ -1,0 +1,107 @@
+
+{% extends "items/base.html" %}
+{% load static %}
+
+{% block title %}Dashboard | Lost and Found{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <section class="dashboard-welcome">
+        <div>
+            <span class="dashboard-label">YOUR PERSONAL DASHBOARD</span>
+            <h1>Welcome, {{ user.first_name|default:user.username }}!</h1>
+            <p>Manage your lost and found reports and find your belongings.</p>
+        </div>
+        <div class="welcome-icon">👋</div>
+    </section>
+
+    <section class="dashboard-actions">
+        <h2>What would you like to do?</h2>
+        <p class="dashboard-subtitle">Choose an action to get started.</p>
+
+        <div class="dashboard-buttons">
+
+            <a href="{% url 'report_item' %}" class="dashboard-action-card">
+                <div class="action-icon">📷</div>
+                <h3>Report an Item</h3>
+                <p>Report a lost or found item with its image and details.</p>
+                <span>Get started →</span>
+            </a>
+
+            <a href="{% url 'browse_items' %}" class="dashboard-action-card">
+                <div class="action-icon">🔍</div>
+                <h3>Browse Items</h3>
+                <p>Explore items reported by other users.</p>
+                <span>Explore →</span>
+            </a>
+
+            <a href="{% url 'my_reports' %}" class="dashboard-action-card">
+                <div class="action-icon">📋</div>
+                <h3>My Reports</h3>
+                <p>View and manage all the items you reported.</p>
+                <span>View reports →</span>
+            </a>
+
+            <a href="{% url 'matches' %}" class="dashboard-action-card">
+                <div class="action-icon">🤝</div>
+                <h3>Possible Matches</h3>
+                <p>Check items that AI image matching found similar.</p>
+                <span>View matches →</span>
+            </a>
+
+        </div>
+    </section>
+
+    <section class="recent-reports">
+        <div class="section-heading">
+            <div>
+                <h2>My Recent Reports</h2>
+                <p>Your recently reported lost and found items.</p>
+            </div>
+            <a href="{% url 'my_reports' %}">View All →</a>
+        </div>
+
+        <div class="recent-items-grid">
+
+            {% for item in items %}
+
+                <div class="recent-item-card">
+
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.item_name }}">
+                    {% else %}
+                        <div class="no-item-image">📦</div>
+                    {% endif %}
+
+                    <div class="recent-item-info">
+                        <h3>{{ item.item_name }}</h3>
+
+                        <span class="item-type">
+                            {{ item.get_item_type_display }}
+                        </span>
+
+                        <p>📍 {{ item.location }}</p>
+                        <p>Status: {{ item.get_status_display }}</p>
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <div class="empty-reports">
+                    <div>📭</div>
+                    <h3>No reports yet</h3>
+                    <p>You haven't reported any items. Start by reporting your first item.</p>
+                    <a href="{% url 'report_item' %}">+ Report an Item</a>
+                </div>
+
+            {% endfor %}
+
+        </div>
+    </section>
+
+</div>
+
+{% endblock %}

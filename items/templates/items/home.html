@@ -1,0 +1,105 @@
+{% extends "items/base.html" %}
+{% load static %}
+
+{% block title %}Home | Lost & Found{% endblock %}
+
+{% block content %}
+
+<section class="home-hero">
+
+    <div class="hero-left">
+
+        <span class="hero-label">AI-POWERED LOST & FOUND SYSTEM</span>
+
+        <h1>
+            Find It.<br>
+            Report It.<br>
+            <span>Get It Back.</span>
+        </h1>
+
+        <p>
+            Lost something important? Don't worry.
+            Report your lost item, browse found items,
+            and let AI-powered image matching help
+            reconnect you with your belongings.
+        </p>
+
+        <div class="hero-actions">
+            <a href="{% url 'report_item' %}" class="home-btn-primary">
+                + Report an Item
+            </a>
+
+            <a href="{% url 'browse_items' %}" class="home-btn-secondary">
+                Browse Items
+            </a>
+        </div>
+
+        <div class="hero-stats">
+            <div>
+                <h3>AI</h3>
+                <p>Smart Matching</p>
+            </div>
+
+            <div>
+                <h3>24/7</h3>
+                <p>Report Anytime</p>
+            </div>
+
+            <div>
+                <h3>Easy</h3>
+                <p>Item Recovery</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="hero-right">
+
+        <img
+            src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=900"
+            alt="Backpack"
+        >
+
+        <div class="hero-image-caption">
+            <span>✨ Smart Image Matching</span>
+            <h3>Let's find it together.</h3>
+            <p>AI helps identify similar items.</p>
+        </div>
+
+    </div>
+
+</section>
+
+<section class="how-section">
+
+    <h2>How It Works</h2>
+
+    <p class="how-subtitle">
+        Three simple steps to recover your belongings.
+    </p>
+
+    <div class="how-grid">
+
+        <div class="how-card">
+            <div class="how-icon">📷</div>
+            <h3>1. Report an Item</h3>
+            <p>Upload an image and provide details about your lost or found item.</p>
+        </div>
+
+        <div class="how-card">
+            <div class="how-icon">🤖</div>
+            <h3>2. AI Image Matching</h3>
+            <p>Our AI system searches for visually similar reported items.</p>
+        </div>
+
+        <div class="how-card">
+            <div class="how-icon">🤝</div>
+            <h3>3. Recover Your Item</h3>
+            <p>Review possible matches and connect with the item reporter.</p>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

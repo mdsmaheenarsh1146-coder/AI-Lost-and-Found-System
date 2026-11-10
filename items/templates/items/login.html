@@ -1,0 +1,48 @@
+
+{% extends "items/base.html" %}
+{% load static %}
+
+{% block title %}Login | Lost and Found{% endblock %}
+
+{% block content %}
+
+<div class="auth-page">
+
+    <div class="auth-card">
+
+        <div class="auth-icon">🔐</div>
+
+        <span class="auth-label">WELCOME BACK</span>
+        <h1>Login to Your Account</h1>
+        <p class="auth-description">
+            Sign in to manage your reports and find your lost belongings.
+        </p>
+
+        {% if form.errors %}
+            <div class="auth-error">
+                Your username or password is incorrect. Please try again.
+            </div>
+        {% endif %}
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit" class="auth-submit-btn">
+                Login →
+            </button>
+
+        </form>
+
+        <div class="auth-bottom">
+            Don't have an account?
+            <a href="{% url 'register' %}">Create an account</a>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
