@@ -1,0 +1,24 @@
+
+{% extends "items/base.html" %}
+
+{% block title %}Access Denied{% endblock %}
+
+{% block content %}
+
+<div class="error-page">
+
+    <h1>403</h1>
+
+    <h2>Access Denied</h2>
+
+    <p>
+        You do not have permission to access this page.
+    </p>
+
+    <a href="{% url 'dashboard' %}" class="btn">
+        Return to Dashboard
+    </a>
+
+</div>
+
+{% endblock %}

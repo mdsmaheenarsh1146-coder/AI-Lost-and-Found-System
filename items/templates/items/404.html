@@ -1,0 +1,22 @@
+
+{% extends "items/base.html" %}
+
+{% block title %}Page Not Found{% endblock %}
+
+{% block content %}
+
+<div class="error-page">
+    <h1>404</h1>
+    <h2>Oops! Page Not Found</h2>
+
+    <p>
+        The page you are looking for does not exist
+        or may have been moved.
+    </p>
+
+    <a href="{% url 'dashboard' %}" class="btn">
+        Return to Dashboard
+    </a>
+</div>
+
+{% endblock %}

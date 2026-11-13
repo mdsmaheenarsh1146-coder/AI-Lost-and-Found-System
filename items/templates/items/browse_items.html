@@ -58,10 +58,11 @@
                     </span>
 
                     <h3>{{ item.item_name }}</h3>
-                    {% if item.item_code %}
-                        <p><strong>Item Code:</strong> {{ item.item_code }}</p>
-                    {% endif %}
-
+                     {% if request.user.is_authenticated and item.user_id == request.user.id %}
+                        {% if item.item_code %}
+                          <p><strong>Item Code:</strong> {{ item.item_code }}</p>
+                        {% endif %}
+                     {% endif %}
                     <p>{{ item.description|truncatewords:15 }}</p>
 
                     <p>📍 {{ item.location }}</p>
@@ -97,5 +98,31 @@
     </section>
 
 </div>
+
+
+{% if page_obj.has_other_pages %}
+
+<div class="pagination-container">
+
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}">
+            Previous
+        </a>
+    {% endif %}
+
+    <span>
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}">
+            Next
+        </a>
+    {% endif %}
+
+</div>
+
+{% endif %}
+
 
 {% endblock %}

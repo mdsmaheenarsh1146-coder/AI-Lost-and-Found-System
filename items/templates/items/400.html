@@ -1,0 +1,26 @@
+
+{% extends "items/base.html" %}
+
+{% block title %}Bad Request{% endblock %}
+
+{% block content %}
+
+<div class="error-page">
+
+    <h1>400</h1>
+
+    <h2>Bad Request</h2>
+
+    <p>
+        Your request could not be processed.
+        Please check your request and try again.
+    </p>
+
+    <a href="{% url 'dashboard' %}" class="btn">
+        Return to Dashboard
+    </a>
+
+</div>
+
+{% endblock %}
+

@@ -13,7 +13,9 @@
         <div class="auth-icon">🔐</div>
 
         <span class="auth-label">WELCOME BACK</span>
+
         <h1>Login to Your Account</h1>
+
         <p class="auth-description">
             Sign in to manage your reports and find your lost belongings.
         </p>
@@ -29,6 +31,13 @@
             {% csrf_token %}
 
             {{ form.as_p }}
+
+            <!-- FORGOT PASSWORD -->
+            <div class="forgot-password-link">
+                <a href="{% url 'password_reset' %}">
+                    Forgot Password?
+                </a>
+            </div>
 
             <button type="submit" class="auth-submit-btn">
                 Login →

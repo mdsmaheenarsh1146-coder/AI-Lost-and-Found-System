@@ -1,0 +1,56 @@
+
+{% extends "items/base.html" %}
+
+{% block title %}Edit Profile | Lost and Found{% endblock %}
+
+{% block content %}
+
+<div class="profile-container">
+
+    <div class="profile-header">
+        <h1>Edit Profile</h1>
+        <p>Update your personal information.</p>
+    </div>
+
+    <div class="profile-card">
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="edit-profile-form">
+
+                {% for field in form %}
+                    <div class="form-group">
+
+                        <label for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                        </label>
+
+                        {{ field }}
+
+                        {% if field.errors %}
+                            <div class="form-error">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+                {% endfor %}
+
+            </div>
+
+            <button type="submit" class="profile-back-btn">
+                Save Changes
+            </button>
+
+            <a href="{% url 'profile' %}" class="profile-back-btn">
+                Cancel
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,15 +1,29 @@
+
 {% load static %}
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | Lost and Found</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
+
 <body>
 
 <h1>Lost and Found Admin Dashboard</h1>
 
+<p>Welcome, {{ request.user.username }}</p>
+
+<a href="{% url 'dashboard' %}">Back to Dashboard</a>
+
 <hr>
+
+<!-- OVERVIEW -->
 
 <h2>Overview</h2>
 
@@ -20,77 +34,360 @@
 
 <hr>
 
+<!-- MESSAGES -->
+
+{% if messages %}
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+<hr>
+
+<!-- ALL USERS -->
+
 <h2>All Registered Users</h2>
 
 <table border="1" cellpadding="10">
+
     <tr>
         <th>ID</th>
         <th>Username</th>
+        <th>Full Name</th>
         <th>Email</th>
         <th>Date Joined</th>
+        <th>Staff</th>
+        <th>Action</th>
     </tr>
 
     {% for user in users %}
+
     <tr>
+
         <td>{{ user.id }}</td>
+
         <td>{{ user.username }}</td>
+
+        <td>
+            {{ user.get_full_name|default:"Not provided" }}
+        </td>
+
         <td>{{ user.email }}</td>
-        <td>{{ user.date_joined }}</td>
+
+        <td>{{ user.date_joined|date:"d M Y" }}</td>
+
+        <td>{{ user.is_staff|yesno:"Yes,No" }}</td>
+
+        <td>
+
+            {% if user.id != request.user.id and not user.is_superuser %}
+
+                <form method="POST"
+                      action="{% url 'admin_delete_user' user.id %}"
+                      onsubmit="return confirm('Delete this user and all their reported items? This cannot be undone.');">
+
+                    {% csrf_token %}
+
+                    <button type="submit">
+                        Delete User
+                    </button>
+
+                </form>
+
+            {% else %}
+
+                Protected Account
+
+            {% endif %}
+
+        </td>
+
     </tr>
+
     {% empty %}
-    <tr><td colspan="4">No users found</td></tr>
+
+    <tr>
+        <td colspan="7">No users found.</td>
+    </tr>
+
     {% endfor %}
+
 </table>
 
 <hr>
 
+<!-- ALL LOST ITEMS -->
+
 <h2>All Lost Items</h2>
 
 {% for item in lost_items %}
+
+<div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
+
+    <h3>{{ item.item_name }}</h3>
+
+    {% if item.image %}
+
+        <img
+            src="{{ item.image.url }}"
+            width="150"
+            alt="{{ item.item_name }}"
+        >
+
+    {% else %}
+
+        <p>No image available.</p>
+
+    {% endif %}
+
     <p>
-        Item: {{ item.item_name }}<br>
-        Reported By: {{ item.user.username }}<br>
-        Location: {{ item.location }}<br>
-        Date: {{ item.date }}<br>
-        Status: {{ item.status }}<br>
-        <img src="{{ item.image.url }}" width="120">
+        <strong>Item ID:</strong>
+        {{ item.id }}
     </p>
-    <hr>
+
+    <p>
+        <strong>Item Code:</strong>
+        {{ item.item_code|default:"Not assigned" }}
+    </p>
+
+    <p>
+        <strong>Description:</strong>
+        {{ item.description }}
+    </p>
+
+    <p>
+        <strong>Reported By:</strong>
+        {{ item.user.username }}
+    </p>
+
+    <p>
+        <strong>Email:</strong>
+        {{ item.user.email }}
+    </p>
+
+    <p>
+        <strong>Phone:</strong>
+        {{ item.phone_number }}
+    </p>
+
+    <p>
+        <strong>Location:</strong>
+        {{ item.location }}
+    </p>
+
+    <p>
+        <strong>Date:</strong>
+        {{ item.date }}
+    </p>
+
+    <p>
+        <strong>Created:</strong>
+        {{ item.created_at|date:"d M Y, H:i" }}
+    </p>
+
+    <p>
+        <strong>Status:</strong>
+        {{ item.status }}
+    </p>
+
+    <p>
+        <strong>Item Type:</strong>
+        {{ item.get_item_type_display }}
+    </p>
+
+    <a href="{% url 'admin_item_details' item.id %}">
+        View Full Details
+    </a>
+
+    <br><br>
+
+    <form method="POST"
+          action="{% url 'admin_delete_item' item.id %}"
+          onsubmit="return confirm('Are you sure you want to permanently delete this lost item?');">
+
+        {% csrf_token %}
+
+        <button type="submit">
+            Delete Item
+        </button>
+
+    </form>
+
+</div>
+
 {% empty %}
+
     <p>No lost items found.</p>
+
 {% endfor %}
+
+<hr>
+
+<!-- ALL FOUND ITEMS -->
 
 <h2>All Found Items</h2>
 
 {% for item in found_items %}
+
+<div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
+
+    <h3>{{ item.item_name }}</h3>
+
+    {% if item.image %}
+
+        <img
+            src="{{ item.image.url }}"
+            width="150"
+            alt="{{ item.item_name }}"
+        >
+
+    {% else %}
+
+        <p>No image available.</p>
+
+    {% endif %}
+
     <p>
-        Item: {{ item.item_name }}<br>
-        Reported By: {{ item.user.username }}<br>
-        Location: {{ item.location }}<br>
-        Date: {{ item.date }}<br>
-        Status: {{ item.status }}<br>
-        <img src="{{ item.image.url }}" width="120">
+        <strong>Item ID:</strong>
+        {{ item.id }}
     </p>
-    <hr>
+
+    <p>
+        <strong>Item Code:</strong>
+        {{ item.item_code|default:"Not assigned" }}
+    </p>
+
+    <p>
+        <strong>Description:</strong>
+        {{ item.description }}
+    </p>
+
+    <p>
+        <strong>Reported By:</strong>
+        {{ item.user.username }}
+    </p>
+
+    <p>
+        <strong>Email:</strong>
+        {{ item.user.email }}
+    </p>
+
+    <p>
+        <strong>Phone:</strong>
+        {{ item.phone_number }}
+    </p>
+
+    <p>
+        <strong>Location:</strong>
+        {{ item.location }}
+    </p>
+
+    <p>
+        <strong>Date:</strong>
+        {{ item.date }}
+    </p>
+
+    <p>
+        <strong>Created:</strong>
+        {{ item.created_at|date:"d M Y, H:i" }}
+    </p>
+
+    <p>
+        <strong>Status:</strong>
+        {{ item.status }}
+    </p>
+
+    <p>
+        <strong>Item Type:</strong>
+        {{ item.get_item_type_display }}
+    </p>
+
+    <a href="{% url 'admin_item_details' item.id %}">
+        View Full Details
+    </a>
+
+    <br><br>
+
+    <form method="POST"
+          action="{% url 'admin_delete_item' item.id %}"
+          onsubmit="return confirm('Are you sure you want to permanently delete this found item?');">
+
+        {% csrf_token %}
+
+        <button type="submit">
+            Delete Item
+        </button>
+
+    </form>
+
+</div>
+
 {% empty %}
+
     <p>No found items found.</p>
+
 {% endfor %}
+
+<hr>
+
+<!-- ALL MATCHES -->
 
 <h2>All Matches</h2>
 
 {% for match in all_matches %}
+
+<div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
+
+    <h3>Match ID: {{ match.id }}</h3>
+
     <p>
-        Lost Item: {{ match.lost_item.item_name }}<br>
-        Found Item: {{ match.found_item.item_name }}<br>
-        Lost Item Owner: {{ match.lost_item.user.username }}<br>
-        Found Item Owner: {{ match.found_item.user.username }}<br>
-        Similarity: {{ match.similarity_score|floatformat:2 }}<br>
-        Match Status: {{ match.status }}
+        <strong>Lost Item:</strong>
+        {{ match.lost_item.item_name }}
     </p>
-    <hr>
+
+    <p>
+        <strong>Found Item:</strong>
+        {{ match.found_item.item_name }}
+    </p>
+
+    <p>
+        <strong>Lost Owner:</strong>
+        {{ match.lost_item.user.username }}
+    </p>
+
+    <p>
+        <strong>Found Reporter:</strong>
+        {{ match.found_item.user.username }}
+    </p>
+
+    <p>
+        <strong>Similarity Score:</strong>
+        {{ match.similarity_score|floatformat:2 }}
+    </p>
+
+    <p>
+        <strong>Match Status:</strong>
+        {{ match.get_status_display }}
+    </p>
+
+    <p>
+        <strong>Created:</strong>
+        {{ match.created_at|date:"d M Y, H:i" }}
+    </p>
+
+</div>
+
 {% empty %}
+
     <p>No matches found.</p>
+
 {% endfor %}
+
+<hr>
+
+<a href="{% url 'dashboard' %}">
+    Back to Dashboard
+</a>
 
 </body>
 </html>

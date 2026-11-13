@@ -1,0 +1,135 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Item Details</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+<h1>Complete Item Details</h1>
+
+<a href="{% url 'admin_dashboard' %}">Back to Admin Dashboard</a>
+
+<hr>
+
+<h2>Item Information</h2>
+
+{% if item.image %}
+    <img src="{{ item.image.url }}"
+         alt="{{ item.item_name }}"
+         width="250">
+{% else %}
+    <p>No image available.</p>
+{% endif %}
+
+<p><strong>Item ID:</strong> {{ item.id }}</p>
+<p><strong>Item Name:</strong> {{ item.item_name }}</p>
+<p><strong>Item Code:</strong> {{ item.item_code|default:"Not assigned" }}</p>
+<p><strong>Item Type:</strong> {{ item.get_item_type_display }}</p>
+<p><strong>Description:</strong> {{ item.description }}</p>
+<p><strong>Location:</strong> {{ item.location }}</p>
+<p><strong>Reported Date:</strong> {{ item.date }}</p>
+<p><strong>Created At:</strong> {{ item.created_at|date:"d M Y, H:i" }}</p>
+<p><strong>Status:</strong> {{ item.get_status_display }}</p>
+
+<hr>
+
+<h2>Reporter Information</h2>
+
+<p><strong>User ID:</strong> {{ item.user.id }}</p>
+<p><strong>Username:</strong> {{ item.user.username }}</p>
+<p><strong>Full Name:</strong> {{ item.user.get_full_name|default:"Not provided" }}</p>
+<p><strong>Email:</strong> {{ item.user.email }}</p>
+<p><strong>Phone:</strong> {{ item.phone_number }}</p>
+<p><strong>Account Joined:</strong> {{ item.user.date_joined|date:"d M Y" }}</p>
+
+<hr>
+
+<h2>Location Sharing Information</h2>
+
+<p><strong>Location Sharing:</strong>
+    {% if item.is_location_sharing %}
+        Active
+    {% else %}
+        Inactive
+    {% endif %}
+</p>
+
+<p><strong>Initial Latitude:</strong>
+    {{ item.found_latitude|default:"Not available" }}
+</p>
+
+<p><strong>Initial Longitude:</strong>
+    {{ item.found_longitude|default:"Not available" }}
+</p>
+
+<p><strong>Current Latitude:</strong>
+    {{ item.current_latitude|default:"Not available" }}
+</p>
+
+<p><strong>Current Longitude:</strong>
+    {{ item.current_longitude|default:"Not available" }}
+</p>
+
+<p><strong>Last Location Update:</strong>
+    {{ item.location_updated_at|default:"Not available" }}
+</p>
+
+<hr>
+
+<h2>AI Match History</h2>
+
+{% for match in related_matches %}
+
+    <div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
+
+        <p><strong>Match ID:</strong> {{ match.id }}</p>
+
+        <p><strong>Lost Item:</strong>
+            {{ match.lost_item.item_name }}
+        </p>
+
+        <p><strong>Found Item:</strong>
+            {{ match.found_item.item_name }}
+        </p>
+
+        <p><strong>Lost Owner:</strong>
+            {{ match.lost_item.user.username }}
+        </p>
+
+        <p><strong>Found Reporter:</strong>
+            {{ match.found_item.user.username }}
+        </p>
+
+        <p><strong>Similarity Score:</strong>
+            {{ match.similarity_score|floatformat:2 }}
+        </p>
+
+        <p><strong>Match Status:</strong>
+            {{ match.get_status_display }}
+        </p>
+
+        <p><strong>Match Created:</strong>
+            {{ match.created_at|date:"d M Y, H:i" }}
+        </p>
+
+    </div>
+
+{% empty %}
+
+    <p>No AI matches found for this item.</p>
+
+{% endfor %}
+
+<hr>
+
+<a href="{% url 'admin_dashboard' %}">Back to Admin Dashboard</a>
+
+</body>
+</html>

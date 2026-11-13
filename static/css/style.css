@@ -1975,3 +1975,296 @@ body {
 .check-item-btn:hover {
     background: #3f1b82;
 }
+
+
+/* 24-Hour Deletion Countdown */
+
+.deletion-countdown-container {
+    background: #fff7e6;
+    border: 1px solid #f0c36d;
+    border-radius: 12px;
+    padding: 18px;
+    margin: 20px 0;
+}
+
+.deletion-countdown-container h4 {
+    color: #9a5b00;
+    margin-bottom: 10px;
+    font-size: 17px;
+}
+
+.deletion-countdown {
+    color: #c0392b;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.deletion-countdown-container small {
+    display: block;
+    color: #765b32;
+    line-height: 1.5;
+}
+
+/* Browse Items Pagination */
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin: 35px 0;
+    flex-wrap: wrap;
+}
+
+.pagination-container a {
+    background: #2563eb;
+    color: white;
+    padding: 10px 22px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.pagination-container a:hover {
+    background: #1d4ed8;
+}
+
+.pagination-container span {
+    font-weight: 600;
+    color: #444;
+}
+
+.error-page {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.error-page h1 {
+    font-size: 100px;
+    color: #2563eb;
+    margin-bottom: 10px;
+}
+
+.error-page h2 {
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.error-page p {
+    margin-bottom: 25px;
+    color: #666;
+}
+
+.error-page .btn {
+    display: inline-block;
+    background: #2563eb;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+
+
+/* Notification Messages */
+
+.messages-container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+.alert-message {
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.alert-message.success {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.alert-message.error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.alert-message.warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.alert-message.info {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+
+
+/* User Profile Page */
+
+.profile-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-header h1 {
+    font-size: 32px;
+    color: #2563eb;
+}
+
+.profile-header p {
+    color: #777;
+}
+
+.profile-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.profile-avatar {
+    width: 90px;
+    height: 90px;
+    background: #2563eb;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 38px;
+    font-weight: bold;
+    margin: 0 auto 15px;
+}
+
+.profile-card h2 {
+    margin-bottom: 5px;
+}
+
+.profile-card>p {
+    color: #777;
+}
+
+.profile-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 30px;
+    text-align: left;
+}
+
+.profile-details div {
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.profile-details strong,
+.profile-details span {
+    display: block;
+}
+
+.profile-details strong {
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.profile-details span {
+    color: #222;
+    overflow-wrap: anywhere;
+}
+
+.profile-stats-heading {
+    margin: 35px 0 20px;
+    text-align: center;
+}
+
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.profile-stat-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+}
+
+.profile-stat-card h3 {
+    font-size: 32px;
+    color: #2563eb;
+}
+
+.profile-stat-card p {
+    color: #666;
+}
+
+.profile-back-btn {
+    display: block;
+    width: fit-content;
+    margin: 30px auto;
+    padding: 12px 24px;
+    background: #2563eb;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+.profile-back-btn:hover {
+    background: #1d4ed8;
+}
+
+@media (max-width: 600px) {
+
+    .profile-details,
+    .profile-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+/* Profile Action Buttons */
+
+.profile-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.profile-actions .profile-back-btn {
+    margin: 30px 0;
+}
+
+
+/* Forgot Password Link */
+
+.forgot-password-link {
+    text-align: right;
+    margin: 12px 0 20px;
+}
+
+.forgot-password-link a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.forgot-password-link a:hover {
+    text-decoration: underline;
+}

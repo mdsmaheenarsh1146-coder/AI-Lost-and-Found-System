@@ -1,0 +1,96 @@
+
+{% extends "items/base.html" %}
+
+{% block title %}My Profile | Lost and Found{% endblock %}
+
+{% block content %}
+
+<div class="profile-container">
+
+    <!-- PROFILE HEADER -->
+    <div class="profile-header">
+        <h1>My Profile</h1>
+        <p>View your account information and activity.</p>
+    </div>
+
+    <!-- PROFILE INFORMATION -->
+    <div class="profile-card">
+
+        <div class="profile-avatar">
+            {{ profile_user.username|first|upper }}
+        </div>
+
+        <h2>
+            {{ profile_user.get_full_name|default:profile_user.username }}
+        </h2>
+
+        <p>@{{ profile_user.username }}</p>
+
+        <div class="profile-details">
+
+            <div>
+                <strong>First Name</strong>
+                <span>{{ profile_user.first_name|default:"Not provided" }}</span>
+            </div>
+
+            <div>
+                <strong>Last Name</strong>
+                <span>{{ profile_user.last_name|default:"Not provided" }}</span>
+            </div>
+
+            <div>
+                <strong>Email Address</strong>
+                <span>{{ profile_user.email|default:"Not provided" }}</span>
+            </div>
+
+            <div>
+                <strong>Account Joined</strong>
+                <span>{{ profile_user.date_joined|date:"d M Y" }}</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- USER ACTIVITY -->
+    <h2 class="profile-stats-heading">My Activity</h2>
+
+    <div class="profile-stats">
+
+        <div class="profile-stat-card">
+            <h3>{{ total_lost_items }}</h3>
+            <p>Lost Items</p>
+        </div>
+
+        <div class="profile-stat-card">
+            <h3>{{ total_found_items }}</h3>
+            <p>Found Items</p>
+        </div>
+
+        <div class="profile-stat-card">
+            <h3>{{ total_confirmed_matches }}</h3>
+            <p>Confirmed Matches</p>
+        </div>
+
+    </div>
+
+    <!-- PROFILE ACTION BUTTONS -->
+    <div class="profile-actions">
+
+        <a href="{% url 'edit_profile' %}" class="profile-back-btn">
+            Edit Profile
+        </a>
+
+        <a href="{% url 'change_password' %}" class="profile-back-btn">
+            Change Password
+        </a>
+
+        <a href="{% url 'dashboard' %}" class="profile-back-btn">
+            Back to Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

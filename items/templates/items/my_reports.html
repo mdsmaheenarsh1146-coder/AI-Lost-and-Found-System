@@ -45,6 +45,12 @@
                     <h2>{{ item.item_name }}</h2>
 
                     {% if item.item_code %}
+                    <p><strong>Item Code:</strong> {{ item.item_code }}</p>
+                    {% else %}
+                    <p><strong>Item Code:</strong> Not assigned yet</p>
+                    {% endif %}
+
+                    {% if item.item_code %}
                         <p><strong>Item Code:</strong> {{ item.item_code }}</p>
                     {% endif %}
 

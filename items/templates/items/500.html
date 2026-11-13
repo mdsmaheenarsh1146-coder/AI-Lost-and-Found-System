@@ -1,0 +1,25 @@
+
+{% extends "items/base.html" %}
+
+{% block title %}Server Error{% endblock %}
+
+{% block content %}
+
+<div class="error-page">
+
+    <h1>500</h1>
+
+    <h2>Something Went Wrong!</h2>
+
+    <p>
+        We are sorry. An unexpected server error occurred.
+        Please try again later.
+    </p>
+
+    <a href="{% url 'dashboard' %}" class="btn">
+        Return to Dashboard
+    </a>
+
+</div>
+
+{% endblock %}

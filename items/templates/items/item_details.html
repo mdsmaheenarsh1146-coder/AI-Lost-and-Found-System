@@ -1,5 +1,4 @@
 
-
 {% extends "items/base.html" %}
 {% load static %}
 
@@ -22,9 +21,15 @@
     <div class="item-details-info">
 
         <h2>{{ item.item_name }}</h2>
-        {% if item.item_code %}
-            <p><strong>Item Code:</strong> {{ item.item_code }}</p>
+
+        <!-- PRIVATE ITEM CODE -->
+        {% if can_view_item_code and item.item_code %}
+            <p>
+                <strong>Item Code:</strong>
+                {{ item.item_code }}
+            </p>
         {% endif %}
+
         <p>
             <strong>Type:</strong>
             {{ item.get_item_type_display }}

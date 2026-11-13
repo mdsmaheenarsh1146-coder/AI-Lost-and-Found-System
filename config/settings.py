@@ -92,12 +92,16 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
 
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -149,3 +153,30 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+
+
+# Session Security Settings
+
+# Log out after 30 minutes of inactivity
+SESSION_COOKIE_AGE = 1800
+
+# Reset the session timer whenever the user makes a request
+SESSION_SAVE_EVERY_REQUEST = True
+
+# Prevent JavaScript from accessing the session cookie
+SESSION_COOKIE_HTTPONLY = True
+
+# Prevent session cookies from being sent over HTTP on production HTTPS sites
+SESSION_COOKIE_SECURE = not DEBUG
+
+
+
+# Image Upload Security
+
+# Maximum uploaded request size: 5 MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024
+
+# Maximum number of form fields
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 100

@@ -30,7 +30,15 @@
 
             {% if user.is_authenticated %}
 
-                <a href="{% url 'dashboard' %}">Dashboard</a>
+                
+<div class="profile-actions">
+<a href="{% url 'profile' %}">My Profile</a>
+    <a href="{% url 'dashboard' %}" class="profile-back-btn">
+         Dashboard
+    </a>
+
+</div>
+
                 <a href="{% url 'browse_items' %}">Browse Items</a>
                 <a href="{% url 'report_item' %}">Report Item</a>
                 <a href="{% url 'my_reports' %}">My Reports</a>
@@ -59,6 +67,18 @@
 
     <!-- MAIN CONTENT -->
     <main class="page-content">
+
+
+    {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="alert-message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
         {% block content %}
         {% endblock %}
     </main>

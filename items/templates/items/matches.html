@@ -1,4 +1,3 @@
-
 {% extends "items/base.html" %}
 {% load static %}
 
@@ -18,225 +17,374 @@
 
         {% for match in matches %}
 
-            <div class="match-card">
+        <div class="match-card">
 
-                <div class="match-card-header">
-                    <div>
-                        <span class="match-badge">🤝 Possible Match</span>
-                        <h2>{{ match.lost_item.item_name }} ↔
-                             {{ match.found_item.item_name }}</h2>
-                    </div>
-
-                    <div class="similarity-score">
-                        <strong>{{ match.similarity_score|floatformat:2 }}</strong>
-                        <span>Similarity Score</span>
-                    </div>
+            <div class="match-card-header">
+                <div>
+                    <span class="match-badge">🤝 Possible Match</span>
+                    <h2>
+                        {{ match.lost_item.item_name }} ↔
+                        {{ match.found_item.item_name }}
+                    </h2>
                 </div>
 
-                <div class="match-images">
+                <div class="similarity-score">
+                    <strong>{{ match.similarity_score|floatformat:2 }}</strong>
+                    <span>Similarity Score</span>
+                </div>
+            </div>
 
-                    <div class="match-item">
-                        <h3>🔴 Lost Item</h3>
+            <div class="match-images">
 
-                        {% if match.lost_item.image %}
-                            <img
-                                src="{{ match.lost_item.image.url }}"
-                                alt="{{ match.lost_item.item_name }}"
-                            >
-                        {% else %}
-                            <div class="match-no-image">📦</div>
-                        {% endif %}
+                <!-- LOST ITEM -->
+                <div class="match-item">
 
-                        <h4>{{ match.lost_item.item_name }}</h4>
-                        <p>📍 {{ match.lost_item.location }}</p>
-                        <p>📅 {{ match.lost_item.date }}</p>
-                        {% if match.lost_item.item_code %}
-                            <p><strong>Shared Item Code:</strong>
-                                {{ match.lost_item.item_code }}
-                            </p>
-                        {% endif %}
-                    </div>
+                    <h3>🔴 Lost Item</h3>
 
-                    <div class="match-divider">↔</div>
+                    {% if match.lost_item.image %}
+                    <img src="{{ match.lost_item.image.url }}" alt="{{ match.lost_item.item_name }}">
+                    {% else %}
+                    <div class="match-no-image">📦</div>
+                    {% endif %}
 
-                    <div class="match-item">
-                        <h3>🟢 Found Item</h3>
+                    <h4>{{ match.lost_item.item_name }}</h4>
 
-                        {% if match.found_item.image %}
-                            <img
-                                src="{{ match.found_item.image.url }}"
-                                alt="{{ match.found_item.item_name }}"
-                            >
-                        {% else %}
-                            <div class="match-no-image">📦</div>
-                        {% endif %}
+                    <p>📍 {{ match.lost_item.location }}</p>
+                    <p>📅 {{ match.lost_item.date }}</p>
 
-                        <h4>{{ match.found_item.item_name }}</h4>
-                        <p>📍 {{ match.found_item.location }}</p>
-                        <p>📅 {{ match.found_item.date }}</p>
-                        <a href="{% url 'item_details' match.lost_item.id %}"
-                        class="check-item-btn">
-                            Check Lost Item
-                        </a>
+                    {% if request.user == match.lost_item.user %}
+                    {% if match.lost_item.item_code %}
+                    <p>
+                        <strong>Lost Item Code:</strong>
+                        {{ match.lost_item.item_code }}
+                    </p>
+                    {% endif %}
+                    {% endif %}
 
-
-                        <a href="{% url 'item_details' match.found_item.id %}"
-                        class="check-item-btn">
-                            Check Found Item
-                        </a>
-
-                        
-                    </div>
+                    <a href="{% url 'item_details' match.lost_item.id %}" class="check-item-btn">
+                        Check Lost Item
+                    </a>
 
                 </div>
 
-                <div class="match-status">
-                    <strong>Match Status:</strong>
-                    <span>{{ match.get_status_display }}</span>
+                <div class="match-divider">↔</div>
+
+                <!-- FOUND ITEM -->
+                <div class="match-item">
+
+                    <h3>🟢 Found Item</h3>
+
+                    {% if match.found_item.image %}
+                    <img src="{{ match.found_item.image.url }}" alt="{{ match.found_item.item_name }}">
+                    {% else %}
+                    <div class="match-no-image">📦</div>
+                    {% endif %}
+
+                    <h4>{{ match.found_item.item_name }}</h4>
+
+                    <p>📍 {{ match.found_item.location }}</p>
+                    <p>📅 {{ match.found_item.date }}</p>
+
+                    {% if request.user == match.found_item.user %}
+                    {% if match.found_item.item_code %}
+                    <p>
+                        <strong>Found Item Code:</strong>
+                        {{ match.found_item.item_code }}
+                    </p>
+                    {% endif %}
+                    {% endif %}
+
+                    <a href="{% url 'item_details' match.found_item.id %}" class="check-item-btn">
+                        Check Found Item
+                    </a>
+
                 </div>
-                {% if match.status == "CONFIRMED" and match.lost_item.user == request.user %}
 
-    <div class="match-contact">
-        <h4>📞 Found Item Reporter Contact</h4>
+            </div>
 
-        {% if match.found_item.phone_number %}
-            <p>{{ match.found_item.phone_number }}</p>
-        {% else %}
-            <p>No phone number was provided.</p>
-        {% endif %}
-    </div>
+            <!-- MATCH STATUS -->
+            <div class="match-status">
+                <strong>Match Status:</strong>
+                <span>{{ match.get_status_display }}</span>
+            </div>
 
-    <div class="live-location-section">
-        <h4>📍 Found Item Live Location</h4>
+            <!-- DELETION COUNTDOWN -->
+            {% if match.lost_item.resolved_at and match.lost_item.user == request.user %}
 
-        <p id="location-status-{{ match.id }}">
-            Checking location...
-        </p>
+            <div class="deletion-countdown-container">
 
-        <iframe
-            id="location-map-{{ match.id }}"
-            width="100%"
-            height="300"
-            style="border:0; border-radius:12px;"
-            loading="lazy"
-            hidden>
-        </iframe>
+                <h4>⏳ Automatic Record Deletion</h4>
 
-        <a
-            id="location-link-{{ match.id }}"
-            href="#"
-            target="_blank"
-            hidden>
-            Open location in Google Maps
-        </a>
-    </div>
+                <p class="deletion-countdown" data-resolved-at="{{ match.lost_item.resolved_at|date:'c' }}">
+                    Calculating remaining time...
+                </p>
 
-    <script>
-    (function () {
+                <small>
+                    Both item records are scheduled for deletion after 24 hours.
+                    The hourly cleanup task may run shortly after the countdown ends.
+                </small>
 
-        const matchId = "{{ match.id }}";
+            </div>
 
-        const status = document.getElementById(
-            "location-status-" + matchId
-        );
+            {% endif %}
 
-        const map = document.getElementById(
-            "location-map-" + matchId
-        );
+            <!-- CONTACT AND LIVE LOCATION -->
+            {% if match.status == "CONFIRMED" and match.lost_item.user == request.user %}
 
-        const link = document.getElementById(
-            "location-link-" + matchId
-        );
+            <div class="match-contact">
 
-        const url = "{% url 'get_live_location' match.id %}";
+                <h4>📞 Found Item Reporter Contact</h4>
 
-        async function refreshLocation() {
-
-            try {
-                const response = await fetch(url);
-
-                if (!response.ok) {
-                    throw new Error("Unable to get location");
-                }
-
-                const data = await response.json();
-
-                if (data.latitude === null || data.longitude === null) {
-                    status.textContent =
-                        "The found reporter has not shared a location yet.";
-                    return;
-                }
-
-                const lat = data.latitude;
-                const lng = data.longitude;
-
-                map.src =
-                    "https://maps.google.com/maps?q=" +
-                    lat + "," + lng + "&z=15&output=embed";
-
-                map.hidden = false;
-
-                link.href =
-                    "https://www.google.com/maps?q=" + lat + "," + lng;
-
-                link.hidden = false;
-
-                status.textContent = data.sharing
-                    ? "Live location sharing is active."
-                    : "Location sharing has stopped. Showing last known location.";
-
-            } catch (error) {
-                status.textContent =
-                    "Unable to load the location.";
-            }
-        }
-
-        refreshLocation();
-
-        setInterval(refreshLocation, 5000);
-
-    })();
-    </script>
-
-{% endif %}
-
-                {% if match.status == "PENDING" and match.lost_item.user == request.user %}
-
-                    <div class="match-actions">
-
-                        <form method="POST" action="{% url 'confirm_match' match.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="confirm-match-btn">
-                                ✓ Confirm Match
-                            </button>
-                        </form>
-
-                        <form method="POST" action="{% url 'reject_match' match.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="reject-match-btn">
-                                ✕ Reject Match
-                            </button>
-                        </form>
-
-                    </div>
-
+                {% if match.found_item.phone_number %}
+                <p>{{ match.found_item.phone_number }}</p>
+                {% else %}
+                <p>No phone number was provided.</p>
                 {% endif %}
 
             </div>
 
+            <div class="live-location-section">
+
+                <h4>📍 Found Item Live Location</h4>
+
+                <p id="location-status-{{ match.id }}">
+                    Checking location...
+                </p>
+
+                <iframe id="location-map-{{ match.id }}" width="100%" height="300" style="border:0; border-radius:12px;"
+                    loading="lazy" hidden>
+                </iframe>
+
+                <a id="location-link-{{ match.id }}" href="#" target="_blank" hidden>
+                    Open location in Google Maps
+                </a>
+
+            </div>
+
+            <script>
+                (function () {
+
+                    const matchId = "{{ match.id }}";
+
+                    const status = document.getElementById(
+                        "location-status-" + matchId
+                    );
+
+                    const map = document.getElementById(
+                        "location-map-" + matchId
+                    );
+
+                    const link = document.getElementById(
+                        "location-link-" + matchId
+                    );
+
+                    const url = "{% url 'get_live_location' match.id %}";
+
+                    async function refreshLocation() {
+
+                        try {
+
+                            const response = await fetch(url);
+
+                            if (!response.ok) {
+                                throw new Error("Unable to get location");
+                            }
+
+                            const data = await response.json();
+
+                            if (
+                                data.latitude === null ||
+                                data.longitude === null
+                            ) {
+                                status.textContent =
+                                    "The found reporter has not shared a location yet.";
+                                return;
+                            }
+
+                            const lat = data.latitude;
+                            const lng = data.longitude;
+
+                            map.src =
+                                "https://maps.google.com/maps?q=" +
+                                lat + "," + lng + "&z=15&output=embed";
+
+                            map.hidden = false;
+
+                            link.href =
+                                "https://www.google.com/maps?q=" +
+                                lat + "," + lng;
+
+                            link.hidden = false;
+
+                            status.textContent = data.sharing
+                                ? "Live location sharing is active."
+                                : "Location sharing has stopped. Showing last known location.";
+
+                        } catch (error) {
+
+                            status.textContent =
+                                "Unable to load the location.";
+
+                        }
+                    }
+
+                    refreshLocation();
+
+                    setInterval(refreshLocation, 5000);
+
+                })();
+            </script>
+
+            {% endif %}
+
+            <!-- ITEM FOUND SUCCESSFULLY -->
+            {% if match.status == "CONFIRMED" and match.lost_item.user == request.user %}
+
+            {% if match.lost_item.status != "RESOLVED" %}
+
+            <div class="match-actions">
+
+                <form method="POST" action="{% url 'mark_item_found' match.id %}">
+
+                    {% csrf_token %}
+
+                    <button type="submit" class="confirm-match-btn"
+                        onclick="return confirm('Are you sure the lost item has been found successfully? Both item records will be deleted after 24 hours.');">
+
+                        ✓ Item Found Successfully
+
+                    </button>
+
+                </form>
+
+            </div>
+
+            {% else %}
+
+            <p class="match-status">
+                ✓ Item found successfully. Both records are scheduled for deletion after 24 hours.
+            </p>
+
+            {% endif %}
+
+            {% endif %}
+
+            <!-- CONFIRM AND REJECT -->
+            {% if match.status == "PENDING" and match.lost_item.user == request.user %}
+
+            <div class="match-actions">
+
+                <form method="POST" action="{% url 'confirm_match' match.id %}">
+
+                    {% csrf_token %}
+
+                    <button type="submit" class="confirm-match-btn">
+                        ✓ Confirm Match
+                    </button>
+
+                </form>
+
+                <form method="POST" action="{% url 'reject_match' match.id %}">
+
+                    {% csrf_token %}
+
+                    <button type="submit" class="reject-match-btn">
+                        ✕ Reject Match
+                    </button>
+
+                </form>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
         {% empty %}
 
-            <div class="matches-empty">
-                <div>🔍</div>
-                <h2>No Matches Found</h2>
-                <p>There are no possible matches available right now. Check again after more items are reported.</p>
-                <a href="{% url 'browse_items' %}">Browse Items</a>
-            </div>
+        <div class="matches-empty">
+
+            <div>🔍</div>
+
+            <h2>No Matches Found</h2>
+
+            <p>
+                There are no possible matches available right now.
+                Check again after more items are reported.
+            </p>
+
+            <a href="{% url 'browse_items' %}">
+                Browse Items
+            </a>
+
+        </div>
 
         {% endfor %}
 
     </section>
 
 </div>
+
+<!-- COUNTDOWN JAVASCRIPT -->
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const countdownElements = document.querySelectorAll(
+            ".deletion-countdown"
+        );
+
+        countdownElements.forEach(function (element) {
+
+            const resolvedAt = new Date(
+                element.dataset.resolvedAt
+            );
+
+            const deadline = new Date(
+                resolvedAt.getTime() + (24 * 60 * 60 * 1000)
+            );
+
+            function updateCountdown() {
+
+                const now = new Date();
+
+                const remaining = deadline.getTime() - now.getTime();
+
+                if (remaining <= 0) {
+
+                    element.textContent =
+                        "The 24-hour period has ended. Waiting for scheduled cleanup.";
+
+                    return;
+                }
+
+                const hours = Math.floor(
+                    remaining / (1000 * 60 * 60)
+                );
+
+                const minutes = Math.floor(
+                    (remaining % (1000 * 60 * 60)) / (1000 * 60)
+                );
+
+                const seconds = Math.floor(
+                    (remaining % (1000 * 60)) / 1000
+                );
+
+                element.textContent =
+                    "Time until deletion: " +
+                    hours + " hours " +
+                    minutes + " minutes " +
+                    seconds + " seconds";
+            }
+
+            updateCountdown();
+
+            setInterval(updateCountdown, 1000);
+
+        });
+
+    });
+
+</script>
 
 {% endblock %}
